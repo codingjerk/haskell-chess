@@ -11,7 +11,6 @@ import Piece
 
 import Data.Ix
 import Data.Array
-import Data.Foldable
 
 type Position = (Char, Int)
 
