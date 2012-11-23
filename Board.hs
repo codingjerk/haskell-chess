@@ -39,14 +39,16 @@ addPiece :: Position -> Piece -> Board -> Board
 addPiece pos piece board = board // [(pos, Occupied piece)]
 
 displayBoard :: Board -> String
-displayBoard b = displayBoard2 8 where
-	displayBoard2 1 = displayLine 1 b
-	displayBoard2 l = displayLine l b ++ "\n" ++ displayBoard2 (pred l)
+displayBoard b = displayBoard2 (snd yranges) where
+	displayBoard2 l
+		| l == (fst yranges) = displayLine l b
+		| otherwise          = displayLine l b ++ "\n" ++ displayBoard2 (pred l)
 
 displayLine :: Int -> Board -> String
-displayLine i b = displayLine2 'a' where
-	displayLine2 'h' = displayCell 'h' i b
-	displayLine2 c = displayCell c i b ++ displayLine2 (succ c)
+displayLine i b = displayLine2 (fst xranges) where
+	displayLine2 c 
+		| c == (snd xranges) = displayCell c i b
+		| otherwise 	     = displayCell c i b ++ displayLine2 (succ c)
 
 displayCell :: Char -> Int -> Board -> String
 displayCell x y b = displaySquare $ b ! (x, y)
