@@ -5,7 +5,7 @@ module Chess.Piece(
 ) where
 
 data PieceColor = Black | White
-	deriving (Show, Read, Eq, Enum, Ord)
+	deriving (Show, Read, Eq, Ord)
 
 data PieceType = Pawn | Knight | Bishop | Rook | Queen | King
 	deriving (Show, Read, Eq, Enum, Ord)
