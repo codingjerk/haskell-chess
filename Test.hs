@@ -1,5 +1,8 @@
 module Test where
 
-import Chess.Piece
+import Piece
+import Board
 
-main = print $ Piece Black Pawn
+board = addPiece ('a',1) (Piece White Rook) emptyBoard
+
+main = putStrLn $ displayBoard board
