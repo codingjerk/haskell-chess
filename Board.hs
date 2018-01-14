@@ -15,7 +15,7 @@ import Data.Array
 type Position = (Char, Int)
 
 data Square = Empty | Occupied Piece
-	deriving (Show)
+	deriving (Show, Eq)
 
 displaySquare :: Square -> String
 displaySquare Empty = "|...|"
@@ -36,7 +36,9 @@ emptyBoard :: Board
 emptyBoard = array boardRanges $ map (\x -> (x, Empty)) $ range boardRanges
 
 addPiece :: Position -> Piece -> Board -> Board
-addPiece pos piece board = board // [(pos, Occupied piece)]
+addPiece pos piece board 
+	| board ! pos == Empty = board // [(pos, Occupied piece)]
+	| otherwise = error "Trying to add piece on non empty square"
 
 displayBoard :: Board -> String
 displayBoard b = concatMap displayLine $ reverse [fst yranges .. snd yranges] where
