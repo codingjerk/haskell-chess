@@ -39,16 +39,6 @@ addPiece :: Position -> Piece -> Board -> Board
 addPiece pos piece board = board // [(pos, Occupied piece)]
 
 displayBoard :: Board -> String
-displayBoard b = displayBoard2 (snd yranges) where
-	displayBoard2 l
-		| l == (fst yranges) = displayLine l b
-		| otherwise          = displayLine l b ++ "\n" ++ displayBoard2 (pred l)
-
-displayLine :: Int -> Board -> String
-displayLine i b = displayLine2 (fst xranges) where
-	displayLine2 c 
-		| c == (snd xranges) = displayCell c i b
-		| otherwise 	     = displayCell c i b ++ displayLine2 (succ c)
-
-displayCell :: Char -> Int -> Board -> String
-displayCell x y b = displaySquare $ b ! (x, y)
+displayBoard b = concatMap displayLine $ reverse [fst yranges .. snd yranges] where
+	displayLine y = concatMap displayCell [fst xranges .. snd xranges] ++ "\n" where
+		displayCell x = displaySquare $ b ! (x, y)
