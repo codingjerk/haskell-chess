@@ -4,7 +4,8 @@ module Board(
 	Board(..),
 	emptyBoard,
 	displayBoard,
-	addPiece
+	addPiece,
+	removePiece
 ) where
 
 import Piece
@@ -39,6 +40,11 @@ addPiece :: Position -> Piece -> Board -> Board
 addPiece pos piece board 
 	| board ! pos == Empty = board // [(pos, Occupied piece)]
 	| otherwise = error "Trying to add piece on non empty square"
+
+removePiece :: Position -> Board -> Board
+removePiece pos board
+	| board ! pos == Empty = error "Trying to remove piece from empty square"
+	| otherwise = board // [(pos, Empty)]
 
 displayBoard :: Board -> String
 displayBoard b = concatMap displayLine $ reverse [fst yranges .. snd yranges] where
