@@ -63,8 +63,8 @@ cutOn n xs = (take n xs): cutOn n (drop n xs)
 boardToFen :: Board -> String
 boardToFen b = concat $ replaceDots $ group $ toString where 
 	replaceDots = map (\a -> if (elem '.' a) then show (length a) else a)
-	toString = concatMap fenLine $ reverse [fst yranges .. snd yranges] where
-	fenLine y = concatMap fenCell [fst xranges .. snd xranges] ++ "/" where
+	toString = (concatMap (\x -> fenLine x ++ "/") $ reverse [succ $ fst yranges .. snd yranges]) ++ fenLine (fst yranges) where
+	fenLine y = concatMap fenCell [fst xranges .. snd xranges] where
 		fenCell x = squareAsFen $ b ! (x, y)
 
 displayBoard :: Board -> String
