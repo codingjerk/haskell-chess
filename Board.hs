@@ -1,5 +1,5 @@
 module Board(
-	Position(..),
+	Coord(..),
 	Square(..),
 	Board,
 	emptyBoard,
@@ -17,7 +17,7 @@ import Data.Ix
 import Data.Array
 import Data.List
 
-type Position = (Char, Int)
+type Coord = (Char, Int)
 
 data Square = Empty | Occupied Piece
 	deriving (Show, Eq)
@@ -30,7 +30,7 @@ squareAsFen :: Square -> String
 squareAsFen Empty = "."
 squareAsFen (Occupied p) = pieceToFen p
 
-type Board = Array Position Square
+type Board = Array Coord Square
 
 xranges :: (Char, Char)
 xranges = ('a', 'h')
@@ -38,23 +38,23 @@ xranges = ('a', 'h')
 yranges :: (Int, Int)
 yranges = (1, 8)
 
-boardRanges :: (Position, Position)
+boardRanges :: (Coord, Coord)
 boardRanges = ( (fst xranges, fst yranges), (snd xranges, snd yranges) )
 
 emptyBoard :: Board
 emptyBoard = array boardRanges $ map (\x -> (x, Empty)) $ range boardRanges
 
-addPiece :: Position -> Piece -> Board -> Board
+addPiece :: Coord -> Piece -> Board -> Board
 addPiece pos piece board 
 	| board ! pos == Empty = setSquare pos (Occupied piece) board
 	| otherwise = error "Trying to add piece on non empty square"
 
-removePiece :: Position -> Board -> Board
+removePiece :: Coord -> Board -> Board
 removePiece pos board
 	| board ! pos == Empty = error "Trying to remove piece from empty square"
 	| otherwise = setSquare pos Empty board
 
-setSquare :: Position -> Square -> Board -> Board
+setSquare :: Coord -> Square -> Board -> Board
 setSquare pos square board = board // [(pos, square)]
 
 cutOn :: Int -> [a] -> [[a]]
