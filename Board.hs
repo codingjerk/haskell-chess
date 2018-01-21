@@ -7,13 +7,15 @@ module Board(
 	addPiece,
 	removePiece,
 	setSquare,
-	newBoard
+	newBoard,
+	boardToFen
 ) where
 
 import Piece
 
 import Data.Ix
 import Data.Array
+import Data.List
 
 type Position = (Char, Int)
 
@@ -23,6 +25,10 @@ data Square = Empty | Occupied Piece
 displaySquare :: Square -> String
 displaySquare Empty = "|...|"
 displaySquare (Occupied p) = "|" ++ displayPiece p ++ "|"
+
+squareAsFen :: Square -> String
+squareAsFen Empty = "."
+squareAsFen (Occupied p) = pieceToFen p
 
 type Board = Array Position Square
 
@@ -50,6 +56,17 @@ removePiece pos board
 
 setSquare :: Position -> Square -> Board -> Board
 setSquare pos square board = board // [(pos, square)]
+
+cutOn :: Int -> [a] -> [[a]]
+cutOn n [] = []
+cutOn n xs = (take n xs): cutOn n (drop n xs)
+
+boardToFen :: Board -> String
+boardToFen b = concat $ replaceDots $ group $ toString where 
+	replaceDots = map (\a -> if (elem '.' a) then show (length a) else a)
+	toString = (concatMap (\x -> fenLine x ++ "/") $ reverse [succ $ fst yranges .. snd yranges]) ++ fenLine (fst yranges) where
+	fenLine y = concatMap fenCell [fst xranges .. snd xranges] where
+		fenCell x = squareAsFen $ b ! (x, y)
 
 displayBoard :: Board -> String
 displayBoard b = concatMap displayLine $ reverse [fst yranges .. snd yranges] where

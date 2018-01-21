@@ -2,7 +2,8 @@ module Piece(
 	Piece(..),
 	PieceColor(..),
 	PieceType(..),
-	displayPiece
+	displayPiece,
+	pieceToFen
 ) where
 
 data PieceColor = Black | White
@@ -28,3 +29,18 @@ displayPiece (Piece Black Bishop) = "bis"
 displayPiece (Piece Black Rook)   = "roo"
 displayPiece (Piece Black Queen)  = "que"
 displayPiece (Piece Black King)   = "kin"
+
+pieceToFen :: Piece -> String
+pieceToFen (Piece White Pawn)   = "P"
+pieceToFen (Piece White Knight) = "N"
+pieceToFen (Piece White Bishop) = "B"
+pieceToFen (Piece White Rook)   = "R"
+pieceToFen (Piece White Queen)  = "Q"
+pieceToFen (Piece White King)   = "K"
+
+pieceToFen (Piece Black Pawn)   = "p"
+pieceToFen (Piece Black Knight) = "n"
+pieceToFen (Piece Black Bishop) = "b"
+pieceToFen (Piece Black Rook)   = "r"
+pieceToFen (Piece Black Queen)  = "q"
+pieceToFen (Piece Black King)   = "k"
