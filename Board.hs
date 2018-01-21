@@ -6,7 +6,8 @@ module Board(
 	displayBoard,
 	addPiece,
 	removePiece,
-	setSquare
+	setSquare,
+	newBoard
 ) where
 
 import Piece
@@ -54,3 +55,14 @@ displayBoard :: Board -> String
 displayBoard b = concatMap displayLine $ reverse [fst yranges .. snd yranges] where
 	displayLine y = concatMap displayCell [fst xranges .. snd xranges] ++ "\n" where
 		displayCell x = displaySquare $ b ! (x, y)
+
+newBoard :: Board
+newBoard = array boardRanges $ map (\x -> (x, piece x)) $ range boardRanges where
+	white = Occupied . Piece White
+	black = Occupied . Piece Black
+	setup = listArray xranges [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+	piece (x, 1) = white $ setup ! x
+	piece (_, 2) = white Pawn
+	piece (_, 7) = black Pawn
+	piece (x, 8) = black $ setup ! x
+	piece _ = Empty
