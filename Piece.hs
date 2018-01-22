@@ -7,6 +7,8 @@ module Piece(
 	pieceFromFen
 ) where
 
+import Data.Char
+
 data PieceColor = Black | White
 	deriving (Show, Read, Eq, Ord)
 
@@ -17,19 +19,8 @@ data Piece = Piece PieceColor PieceType
 	deriving (Show, Read, Eq, Ord)
 
 displayPiece :: Piece -> String
-displayPiece (Piece White Pawn)   = "PAW"
-displayPiece (Piece White Knight) = "KNI"
-displayPiece (Piece White Bishop) = "BIS"
-displayPiece (Piece White Rook)   = "ROO"
-displayPiece (Piece White Queen)  = "QUE"
-displayPiece (Piece White King)   = "KIN"
-
-displayPiece (Piece Black Pawn)   = "paw"
-displayPiece (Piece Black Knight) = "kni"
-displayPiece (Piece Black Bishop) = "bis"
-displayPiece (Piece Black Rook)   = "roo"
-displayPiece (Piece Black Queen)  = "que"
-displayPiece (Piece Black King)   = "kin"
+displayPiece (Piece White p) = map (toUpper) $ show p
+displayPiece (Piece Black p) = map (toLower) $ show p
 
 pieceToFen :: Piece -> String
 pieceToFen (Piece White Pawn)   = "P"

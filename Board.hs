@@ -25,8 +25,8 @@ data Square = Empty | Occupied Piece
 	deriving (Show, Eq)
 
 displaySquare :: Square -> String
-displaySquare Empty = "|...|"
-displaySquare (Occupied p) = "|" ++ displayPiece p ++ "|"
+displaySquare Empty = "|..|"
+displaySquare (Occupied p) = "|" ++ take 2 (displayPiece p) ++ "|"
 
 squareAsFen :: Square -> String
 squareAsFen Empty = "."
@@ -100,4 +100,3 @@ newBoard = array boardRanges $ map (\x -> (x, piece x)) $ range boardRanges wher
 	piece (_, 7) = black Pawn
 	piece (x, 8) = black $ setup ! x
 	piece _ = Empty
-	
