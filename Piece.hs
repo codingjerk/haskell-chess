@@ -3,7 +3,8 @@ module Piece(
 	PieceColor(..),
 	PieceType(..),
 	displayPiece,
-	pieceToFen
+	pieceToFen,
+	pieceFromFen
 ) where
 
 data PieceColor = Black | White
@@ -44,3 +45,20 @@ pieceToFen (Piece Black Bishop) = "b"
 pieceToFen (Piece Black Rook)   = "r"
 pieceToFen (Piece Black Queen)  = "q"
 pieceToFen (Piece Black King)   = "k"
+
+pieceFromFen :: Char -> Piece
+pieceFromFen 'P' = (Piece White Pawn)  
+pieceFromFen 'N' = (Piece White Knight)
+pieceFromFen 'B' = (Piece White Bishop)
+pieceFromFen 'R' = (Piece White Rook)  
+pieceFromFen 'Q' = (Piece White Queen) 
+pieceFromFen 'K' = (Piece White King)  
+
+pieceFromFen 'p' = (Piece Black Pawn)  
+pieceFromFen 'n' = (Piece Black Knight)
+pieceFromFen 'b' = (Piece Black Bishop)
+pieceFromFen 'r' = (Piece Black Rook)  
+pieceFromFen 'q' = (Piece Black Queen) 
+pieceFromFen 'k' = (Piece Black King)  
+
+pieceFromFen x = error ("Unknown char: " ++ [x])

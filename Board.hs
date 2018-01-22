@@ -8,7 +8,8 @@ module Board(
 	removePiece,
 	setSquare,
 	newBoard,
-	boardToFen
+	boardToFen,
+	boardFromFen
 ) where
 
 import Piece
@@ -16,6 +17,7 @@ import Piece
 import Data.Ix
 import Data.Array
 import Data.List
+import Data.Char
 
 type Coord = (Char, Int)
 
@@ -68,6 +70,21 @@ boardToFen b = concat $ replaceDots $ group $ toString where
 	fenLine y = concatMap fenCell [fst xranges .. snd xranges] where
 		fenCell x = squareAsFen $ b ! (x, y)
 
+splitOn :: Eq a => a -> [a] -> [[a]]
+splitOn _ [] = []
+splitOn e xs = takeWhile (/=e) xs: splitOn e (drop 1 $ dropWhile (/=e) xs)
+
+boardFromFen :: String -> Board
+boardFromFen fen = fromList $ map (createLine) splitedFen where
+	createLine [] = []
+	createLine (x:xs)
+		| isDigit x = replicate (digitToInt x) Empty ++ createLine xs
+		| otherwise = Occupied (pieceFromFen x): createLine xs
+	splitedFen = splitOn '/' fen
+	fromList :: [[Square]] -> Board
+	fromList sqs = array boardRanges $ map (\(x, y) -> ((x,y), cell x y)) $ range boardRanges where
+		cell x y = sqs !! ((snd yranges) - y) !! (fromEnum x - fromEnum (fst xranges))
+
 displayBoard :: Board -> String
 displayBoard b = concatMap displayLine $ reverse [fst yranges .. snd yranges] where
 	displayLine y = concatMap displayCell [fst xranges .. snd xranges] ++ "\n" where
@@ -83,3 +100,4 @@ newBoard = array boardRanges $ map (\x -> (x, piece x)) $ range boardRanges wher
 	piece (_, 7) = black Pawn
 	piece (x, 8) = black $ setup ! x
 	piece _ = Empty
+	
