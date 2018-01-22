@@ -82,8 +82,13 @@ boardFromFen fen = fromList $ map (createLine) splitedFen where
 		| otherwise = Occupied (pieceFromFen x): createLine xs
 	splitedFen = splitOn '/' fen
 	fromList :: [[Square]] -> Board
-	fromList sqs = array boardRanges $ map (\(x, y) -> ((x,y), cell x y)) $ range boardRanges where
-		cell x y = sqs !! ((snd yranges) - y) !! (fromEnum x - fromEnum (fst xranges))
+	fromList sqs = array boardRanges cells where
+		cells = [ (i, sq) | (i, sq) <- indexed] where
+			indexed 
+				| length transposedsqs /= length indexes = error "Fen notation represent a board with different size"
+				| otherwise = zip indexes $ transposedsqs where
+					transposedsqs = concat $ map reverse $ transpose sqs
+					indexes = range boardRanges
 
 displayBoard :: Board -> String
 displayBoard b = concatMap displayLine $ reverse [fst yranges .. snd yranges] where
