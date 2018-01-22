@@ -14,4 +14,6 @@ board =
 	$ addPiece ('h',1) (Piece White Rook) 
 	emptyBoard
 
-main = putStrLn $ boardToFen newBoard
+main = do
+	putStrLn $ displayBoard $ newBoard
+	putStr $ displayBoard $ boardFromFen "4k3/8/4K3/8/8/8/R7/8"
