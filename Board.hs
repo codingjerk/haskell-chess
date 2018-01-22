@@ -63,12 +63,13 @@ cutOn :: Int -> [a] -> [[a]]
 cutOn n [] = []
 cutOn n xs = (take n xs): cutOn n (drop n xs)
 
+boardToString :: (Square -> String) -> String -> String -> Board -> String
+boardToString f squareSep lineSep b = intercalate lineSep $ map lineToString $ reverse [fst yranges .. snd yranges] where
+    lineToString y = intercalate squareSep $ map (\x -> f $ b ! (x, y)) $ [fst xranges .. snd xranges]
+
 boardToFen :: Board -> String
-boardToFen b = concat $ replaceDots $ group $ toString where 
+boardToFen b = concat $ replaceDots $ group $ boardToString squareAsFen "" "/" b where
 	replaceDots = map (\a -> if (elem '.' a) then show (length a) else a)
-	toString = (concatMap (\x -> fenLine x ++ "/") $ reverse [succ $ fst yranges .. snd yranges]) ++ fenLine (fst yranges) where
-	fenLine y = concatMap fenCell [fst xranges .. snd xranges] where
-		fenCell x = squareAsFen $ b ! (x, y)
 
 splitOn :: Eq a => a -> [a] -> [[a]]
 splitOn _ [] = []
@@ -86,9 +87,7 @@ boardFromFen fen = fromList $ map (createLine) splitedFen where
 		cell x y = sqs !! ((snd yranges) - y) !! (fromEnum x - fromEnum (fst xranges))
 
 displayBoard :: Board -> String
-displayBoard b = concatMap displayLine $ reverse [fst yranges .. snd yranges] where
-	displayLine y = concatMap displayCell [fst xranges .. snd xranges] ++ "\n" where
-		displayCell x = displaySquare $ b ! (x, y)
+displayBoard b = boardToString displaySquare "" "\n" b ++ "\n"
 
 newBoard :: Board
 newBoard = array boardRanges $ map (\x -> (x, piece x)) $ range boardRanges where
