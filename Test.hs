@@ -18,8 +18,16 @@ testingBoard2 = boardFromFen "4k3/8/4K3/8/8/8/R7/8"
 
 testingBoard3 = newBoard
 
+startingFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+
 test b = do
 	putStr $ displayBoard b
 	putStrLn $ (boardToFen b) ++ "\n"
 
-main = mapM_ (test) [testingBoard1, testingBoard2, testingBoard3]
+assert name value = if value then putStrLn (name ++ " Ok!") else putStrLn (name ++ "Error!")
+
+main = do
+	mapM_ (test) [testingBoard1, testingBoard2, testingBoard3]
+
+	assert "newBoard test" $ newBoard == boardFromFen startingFen
+	assert "parsing and generation test" $ startingFen == (boardToFen . boardFromFen $ startingFen)
