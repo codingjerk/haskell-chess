@@ -24,9 +24,15 @@ type Coord = (Char, Int)
 data Square = Empty | Occupied Piece
 	deriving (Show, Eq)
 
+squareWidth :: Int
+squareWidth = 2
+
+squareFill :: Char
+squareFill = ' '
+
 displaySquare :: Square -> String
-displaySquare Empty = "|..|"
-displaySquare (Occupied p) = "|" ++ take 2 (displayPiece p) ++ "|"
+displaySquare Empty = "|" ++ replicate squareWidth squareFill ++ "|"
+displaySquare (Occupied p) = "|" ++ take squareWidth (displayPiece p) ++ "|"
 
 squareAsFen :: Square -> String
 squareAsFen Empty = "."
