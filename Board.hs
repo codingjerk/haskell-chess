@@ -1,5 +1,6 @@
 module Board(
 	Coord(..),
+	coordFromFen,
 	Square(..),
 	Board,
 	emptyBoard,
@@ -20,6 +21,9 @@ import Data.List
 import Data.Char
 
 type Coord = (Char, Int)
+
+coordFromFen :: String -> Coord
+coordFromFen (x:y:[]) = (x, digitToInt y)
 
 data Square = Empty | Occupied Piece
 	deriving (Show, Eq)
