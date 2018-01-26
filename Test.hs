@@ -4,6 +4,15 @@ import Piece
 import Board
 import Position
 
-position = positionFromFen "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-main = putStrLn $ displayPosition position
+position = positionFromFen fen
+
+main = do 
+	putStrLn $ displayPosition position
+	putStrLn "\n---\n"
+
+	putStrLn $ positionToFen position
+	putStrLn "\n---\n"
+
+	print $ fen == positionToFen position
