@@ -9,6 +9,7 @@ module Position(
 
 import Board
 import Piece
+import Coord
 import Data.Char
 
 type TurnColor = PieceColor
