@@ -4,7 +4,8 @@ module Piece(
 	PieceType(..),
 	displayPiece,
 	pieceToFen,
-	pieceFromFen
+	pieceFromFen,
+	pieceTypeToFen
 ) where
 
 import Data.Char
@@ -53,3 +54,6 @@ pieceFromFen 'q' = (Piece Black Queen)
 pieceFromFen 'k' = (Piece Black King)  
 
 pieceFromFen x = error ("Unknown char: " ++ [x])
+
+pieceTypeToFen :: PieceType -> String
+pieceTypeToFen p = pieceToFen (Piece White p)
