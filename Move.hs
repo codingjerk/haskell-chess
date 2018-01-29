@@ -33,6 +33,5 @@ displayMove (Move (PromotionMove p) f t) = coordToFen f ++ "-" ++ coordToFen t +
 displayMove (Move PawnCapture f t) = coordToFen f ++ "x" ++ coordToFen t
 displayMove (Move PawnDoubleMove f t) = coordToFen f ++ "-" ++ coordToFen t
 displayMove (Move EnpassantMove f t) = coordToFen f ++ "x" ++ coordToFen t
-
 displayMove (Move LongCastlingMove f t) = "0-0-0"
 displayMove (Move ShortCastlingMove f t) = "0-0"
