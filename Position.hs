@@ -84,9 +84,9 @@ displayPosition :: Position -> String
 displayPosition (Position board turn castl enp clock moves) = 
 	displayBoard board ++ "\n\n" ++
 	"Turn: " ++ show turn ++ "\n" ++
-	"Castling Possibility: " ++ displayCastring castl ++ "\n\n" ++
-	"Enpassant Coordinates: " ++ show enp ++ "\n\n" ++
-	"Halfmove clock: " ++ show clock ++ "\n\n" ++
+	"Castling Possibility: " ++ displayCastring castl ++ "\n" ++
+	"Enpassant Coordinates: " ++ show enp ++ "\n" ++
+	"Halfmove clock: " ++ show clock ++ "\n" ++
 	"Fullmove number: " ++ show moves
 
 positionToFen :: Position -> String
