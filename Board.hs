@@ -1,5 +1,6 @@
 module Board(
 	Square(..),
+	fromSquare,
 	Board,
 	emptyBoard,
 	displayBoard,
@@ -21,6 +22,9 @@ import Data.Char
 
 data Square = Empty | Occupied Piece
 	deriving (Show, Eq)
+
+fromSquare :: Square -> Piece
+fromSquare (Occupied p) = p
 
 squareWidth :: Int
 squareWidth = 2
