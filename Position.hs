@@ -4,12 +4,16 @@ module Position(
 	Position(..),
 	positionFromFen,
 	displayPosition,
-	positionToFen
+	positionToFen,
+	makeMoveLow -- !!! remove this dangerous function after testing
 ) where
 
 import Board
+import Data.Array
+import Data.Maybe
 import Piece
 import Coord
+import Move
 import Data.Char
 
 type TurnColor = PieceColor
@@ -97,3 +101,10 @@ positionToFen (Position board turn castl enp clock moves) =
 	enpassantToFen enp ++ " " ++
 	show clock ++ " " ++
 	show moves
+
+makeMoveLow :: Move -> Position -> Position
+makeMoveLow (Move _ from to) pos@(Position board turn castl enp clock moves) = 
+	pos { board = nextboard, turn = nextturn } where
+		nextboard = removePiece from $ addPiece to piece board where
+			piece = fromSquare $ board ! from
+		nextturn = if turn == White then Black else White
