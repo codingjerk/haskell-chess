@@ -102,8 +102,8 @@ positionToFen (Position board turn castl enp clock moves) =
 	show clock ++ " " ++
 	show moves
 
-makeMoveLow :: Move -> Position -> Position
-makeMoveLow (Move _ from to) pos@(Position board turn castl enp clock moves) = 
+makeMoveLow :: Coord -> Coord -> Position -> Position
+makeMoveLow from to pos@(Position board turn castl enp clock moves) = 
 	pos { board = nextboard, turn = nextturn } where
 		nextboard = removePiece from $ addPiece to piece board where
 			piece = fromSquare $ board ! from
