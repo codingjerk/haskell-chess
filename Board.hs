@@ -20,11 +20,10 @@ import Data.Array
 import Data.List
 import Data.Char
 
-data Square = Empty | Occupied Piece
-	deriving (Show, Eq)
+type Square = Maybe Piece
 
 fromSquare :: Square -> Piece
-fromSquare (Occupied p) = p
+fromSquare (Just p) = p
 
 squareWidth :: Int
 squareWidth = 2
@@ -33,12 +32,12 @@ squareFill :: Char
 squareFill = ' '
 
 displaySquare :: Square -> String
-displaySquare Empty = "|" ++ replicate squareWidth squareFill ++ "|"
-displaySquare (Occupied p) = "|" ++ take squareWidth (displayPiece p) ++ "|"
+displaySquare Nothing = "|" ++ replicate squareWidth squareFill ++ "|"
+displaySquare (Just p) = "|" ++ take squareWidth (displayPiece p) ++ "|"
 
 squareAsFen :: Square -> String
-squareAsFen Empty = "."
-squareAsFen (Occupied p) = pieceToFen p
+squareAsFen Nothing = "."
+squareAsFen (Just p) = pieceToFen p
 
 type Board = Array Coord Square
 
@@ -52,17 +51,17 @@ boardRanges :: (Coord, Coord)
 boardRanges = ( (fst xranges, fst yranges), (snd xranges, snd yranges) )
 
 emptyBoard :: Board
-emptyBoard = array boardRanges $ map (\x -> (x, Empty)) $ range boardRanges
+emptyBoard = array boardRanges $ map (\x -> (x, Nothing)) $ range boardRanges
 
 addPiece :: Coord -> Piece -> Board -> Board
 addPiece pos piece board 
-	| board ! pos == Empty = setSquare pos (Occupied piece) board
-	| otherwise = error "Trying to add piece on non empty square"
+	| board ! pos == Nothing = setSquare pos (Just piece) board
+	| otherwise = error "Trying to add piece on non Nothing square"
 
 removePiece :: Coord -> Board -> Board
 removePiece pos board
-	| board ! pos == Empty = error "Trying to remove piece from empty square"
-	| otherwise = setSquare pos Empty board
+	| board ! pos == Nothing = error "Trying to remove piece from Nothing square"
+	| otherwise = setSquare pos Nothing board
 
 setSquare :: Coord -> Square -> Board -> Board
 setSquare pos square board = board // [(pos, square)]
@@ -87,8 +86,8 @@ boardFromFen :: String -> Board
 boardFromFen fen = fromList $ map (createLine) splitedFen where
 	createLine [] = []
 	createLine (x:xs)
-		| isDigit x = replicate (digitToInt x) Empty ++ createLine xs
-		| otherwise = Occupied (pieceFromFen x): createLine xs
+		| isDigit x = replicate (digitToInt x) Nothing ++ createLine xs
+		| otherwise = Just (pieceFromFen x): createLine xs
 	splitedFen = splitOn '/' fen
 	fromList :: [[Square]] -> Board
 	fromList sqs = array boardRanges cells where
@@ -104,11 +103,11 @@ displayBoard b = boardToString displaySquare "" "\n" b ++ "\n"
 
 newBoard :: Board
 newBoard = array boardRanges $ map (\x -> (x, piece x)) $ range boardRanges where
-	white = Occupied . Piece White
-	black = Occupied . Piece Black
+	white = Just . Piece White
+	black = Just . Piece Black
 	setup = listArray xranges [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
 	piece (x, 1) = white $ setup ! x
 	piece (_, 2) = white Pawn
 	piece (_, 7) = black Pawn
 	piece (x, 8) = black $ setup ! x
-	piece _ = Empty
+	piece _ = Nothing
