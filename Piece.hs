@@ -5,7 +5,8 @@ module Piece(
 	displayPiece,
 	pieceToFen,
 	pieceFromFen,
-	pieceTypeToFen
+	pieceTypeToFen,
+	pieceType
 ) where
 
 import Data.Char
@@ -18,6 +19,9 @@ data PieceType = Pawn | Knight | Bishop | Rook | Queen | King
 
 data Piece = Piece PieceColor PieceType
 	deriving (Show, Read, Eq, Ord)
+
+pieceType :: Piece -> PieceType
+pieceType (Piece _ t) = t
 
 displayPiece :: Piece -> String
 displayPiece (Piece White p) = map (toUpper) $ show p
