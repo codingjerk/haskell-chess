@@ -9,7 +9,9 @@ module Board(
 	setSquare,
 	newBoard,
 	boardToFen,
-	boardFromFen
+	boardFromFen,
+	xranges,
+	yranges
 ) where
 
 import Piece
