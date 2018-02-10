@@ -104,7 +104,27 @@ positionToFen (Position board turn castl enp clock moves) =
 
 makeMoveLow :: Coord -> Coord -> Position -> Position
 makeMoveLow from to pos@(Position board turn castl enp clock moves) = 
-	pos { board = nextboard, turn = nextturn } where
-		nextboard = removePiece from $ addPiece to piece board where
-			piece = fromSquare $ board ! from
+	pos { 
+		board = nextboard, 
+		turn = nextturn, 
+		fullmoveNumber = nextmoves, 
+		halfmoveClock = nexthalf,
+		--castling = nextcastling piece,
+		enpassant = Nothing
+	} where
+		nextboard = removePiece from $ addPiece to piece boardWithEmptyToSquare where
+			boardWithEmptyToSquare = if isCaptureMove then removePiece to board else board
+		piece = fromSquare $ board ! from
 		nextturn = if turn == White then Black else White
+		nextmoves = if turn == Black then (moves + 1) else moves
+		isCaptureMove = (board ! to) /= Nothing
+		nexthalf = if (isCaptureMove && (pieceType piece == Pawn)) then 0 else (clock + 1)
+		--nextcastling (Piece White King) = castl {whiteLong = False, whiteShort = False}
+		--nextcastling (Piece Black King) = castl {blackLong = False, blackShort = False}
+		--nextcastling (Piece White Rook) = if fst from == fst xranges 
+		--	then castl {whiteLong = False}
+		--	else castl {whiteShort = False}
+		--nextcastling (Piece Black Rook) = if fst from == fst xranges 
+		--	then castl {blackLong = False}
+		--	else castl {blackShort = False}
+		--nextcastling p = castl
