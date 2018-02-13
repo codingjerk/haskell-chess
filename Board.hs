@@ -7,7 +7,7 @@ module Board(
 	addPiece,
 	removePiece,
 	setSquare,
-	newBoard,
+	initialBoard,
 	boardToFen,
 	boardFromFen,
 	xranges,
@@ -103,8 +103,8 @@ boardFromFen fen = fromList $ map (createLine) splitedFen where
 displayBoard :: Board -> String
 displayBoard b = boardToString displaySquare "" "\n" b ++ "\n"
 
-newBoard :: Board
-newBoard = array boardRanges $ map (\x -> (x, piece x)) $ range boardRanges where
+initialBoard :: Board
+initialBoard = array boardRanges $ map (\x -> (x, piece x)) $ range boardRanges where
 	white = Just . Piece White
 	black = Just . Piece Black
 	setup = listArray xranges [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
