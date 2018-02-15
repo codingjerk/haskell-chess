@@ -90,7 +90,7 @@ displayPosition (Position board turn castl enp clock moves) =
 	"Turn: " ++ show turn ++ "\n" ++
 	"Castling Possibility: " ++ displayCastring castl ++ "\n" ++
 	"Enpassant Coordinates: " ++ show enp ++ "\n" ++
-	"Halfmove clock: " ++ show clock ++ "\n" ++
+	"Halfmove clock: " ++ show clock ++ "\n" ++
 	"Fullmove number: " ++ show moves
 
 positionToFen :: Position -> String
@@ -160,8 +160,9 @@ makeMoveNoChecks (Move ShortCastlingMove f t) pos = makeMoveNoChecks (Move Norma
 	rookFrom = ('h', snd f)
 	rookTo = ('f', snd f)
 
+-- TODO: Create move validation function for testing
 isValidMove :: Move -> Position -> Bool
-isValidMove move pos = False
+isValidMove move pos = True
 
 makeMove :: Move -> Position -> Position
 makeMove move pos 
