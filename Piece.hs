@@ -6,7 +6,8 @@ module Piece(
 	pieceToFen,
 	pieceFromFen,
 	pieceTypeToFen,
-	pieceType
+	pieceType,
+	setType
 ) where
 
 import Data.Char
@@ -22,6 +23,9 @@ data Piece = Piece PieceColor PieceType
 
 pieceType :: Piece -> PieceType
 pieceType (Piece _ t) = t
+
+setType :: PieceType -> Piece -> Piece
+setType t (Piece c _) = Piece c t
 
 displayPiece :: Piece -> String
 displayPiece (Piece White p) = map (toUpper) $ show p
