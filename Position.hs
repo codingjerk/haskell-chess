@@ -5,7 +5,7 @@ module Position(
 	positionFromFen,
 	displayPosition,
 	positionToFen,
-	makeMoveLow -- !!! remove this dangerous function after testing
+	makeMove
 ) where
 
 import Board
@@ -102,29 +102,68 @@ positionToFen (Position board turn castl enp clock moves) =
 	show clock ++ " " ++
 	show moves
 
-makeMoveLow :: Coord -> Coord -> Position -> Position
-makeMoveLow from to pos@(Position board turn castl enp clock moves) = 
+data Triple = TTrue | TFalse | TMaybe
+	deriving Eq
+
+makeMoveLow :: Coord -> Coord -> Triple -> Position -> Position
+makeMoveLow from to isCaptureMove pos@(Position board turn castl enp clock moves) = 
 	pos { 
 		board = nextboard, 
 		turn = nextturn, 
 		fullmoveNumber = nextmoves, 
 		halfmoveClock = nexthalf,
-		--castling = nextcastling piece,
+		castling = nextcastling piece,
 		enpassant = Nothing
 	} where
 		nextboard = removePiece from $ addPiece to piece boardWithEmptyToSquare where
-			boardWithEmptyToSquare = if isCaptureMove then removePiece to board else board
+			boardWithEmptyToSquare = if (isCaptureMove == TTrue) || (isCaptureMove == TMaybe && isRealCaptureMove) then removePiece to board else board
 		piece = fromSquare $ board ! from
 		nextturn = if turn == White then Black else White
 		nextmoves = if turn == Black then (moves + 1) else moves
-		isCaptureMove = (board ! to) /= Nothing
-		nexthalf = if (isCaptureMove && (pieceType piece == Pawn)) then 0 else (clock + 1)
-		--nextcastling (Piece White King) = castl {whiteLong = False, whiteShort = False}
-		--nextcastling (Piece Black King) = castl {blackLong = False, blackShort = False}
-		--nextcastling (Piece White Rook) = if fst from == fst xranges 
-		--	then castl {whiteLong = False}
-		--	else castl {whiteShort = False}
-		--nextcastling (Piece Black Rook) = if fst from == fst xranges 
-		--	then castl {blackLong = False}
-		--	else castl {blackShort = False}
-		--nextcastling p = castl
+		nexthalf = if (isRealCaptureMove && (pieceType piece == Pawn)) then 0 else (clock + 1)
+		isRealCaptureMove = (board ! to) /= Nothing
+		nextcastling (Piece White King) = castl {whiteLong = False, whiteShort = False}
+		nextcastling (Piece Black King) = castl {blackLong = False, blackShort = False}
+		nextcastling (Piece White Rook) = if fst from == fst xranges 
+			then castl {whiteLong = False}
+			else castl {whiteShort = False}
+		nextcastling (Piece Black Rook) = if fst from == fst xranges 
+			then castl {blackLong = False}
+			else castl {blackShort = False}
+		nextcastling p = castl
+
+makeMoveNoChecks :: Move -> Position -> Position
+makeMoveNoChecks (Move NormalMove f t) pos = (makeMoveLow f t TFalse pos)
+makeMoveNoChecks (Move CaptureMove f t) pos = (makeMoveLow f t TTrue pos)
+
+makeMoveNoChecks (Move (PromotionMove p) f t) pos = nextpos {board = nextboard} where
+	nextpos = (makeMoveLow f t TMaybe pos)
+	nextboard = setSquare t (Just nextpiece) (board nextpos) where
+		nextpiece = setType p (fromSquare $ board pos ! t)
+
+makeMoveNoChecks (Move PawnCapture f t) pos = (makeMoveLow f t TTrue pos)
+makeMoveNoChecks (Move PawnDoubleMove f t) pos = (makeMoveLow f t TFalse pos) {enpassant = nextenpass} where
+	nextenpass = Just $ averageCoord f t where
+		averageCoord f t = (fst f, div (snd t + snd f) 2)
+
+makeMoveNoChecks (Move EnpassantMove f t) pos = nextpos {board = nextboard} where
+	nextpos = (makeMoveLow f t TFalse pos)
+	nextboard = removePiece (fst coord, sndcoord) (board nextpos) where
+		coord = (fromJust $ enpassant pos)
+		sndcoord = if snd coord == 3 then 4 else 5
+
+makeMoveNoChecks (Move LongCastlingMove f t) pos = makeMoveNoChecks (Move NormalMove rookFrom rookTo) (makeMoveLow f t TFalse pos) where
+	rookFrom = ('a', snd f)
+	rookTo = ('d', snd f)
+
+makeMoveNoChecks (Move ShortCastlingMove f t) pos = makeMoveNoChecks (Move NormalMove rookFrom rookTo) (makeMoveLow f t TFalse pos) where
+	rookFrom = ('h', snd f)
+	rookTo = ('f', snd f)
+
+isValidMove :: Move -> Position -> Bool
+isValidMove move pos = False
+
+makeMove :: Move -> Position -> Position
+makeMove move pos 
+	| isValidMove move pos = makeMoveNoChecks move pos
+	| otherwise 	       = error "Internal error: invalid move" 
