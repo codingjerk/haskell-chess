@@ -7,6 +7,7 @@ module Piece(
 	pieceFromFen,
 	pieceTypeToFen,
 	pieceType,
+	pieceColor,
 	setType
 ) where
 
@@ -23,6 +24,9 @@ data Piece = Piece PieceColor PieceType
 
 pieceType :: Piece -> PieceType
 pieceType (Piece _ t) = t
+
+pieceColor :: Piece -> PieceColor
+pieceColor (Piece c _) = c
 
 setType :: PieceType -> Piece -> Piece
 setType t (Piece c _) = Piece c t
