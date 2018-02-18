@@ -2,6 +2,8 @@ module Test where
 
 import Position
 import Move
+import Generator
+import Piece
 
 fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
@@ -15,3 +17,6 @@ main = do
 	putStrLn $ displayPosition position ++ "\n\n"
 	putStrLn $ displayPosition new_position ++ "\n\n"
 	putStrLn $ displayPosition new_position2
+
+	putStrLn "\n\n-----\n"
+	mapM_ print $ zip [1..] $ map (displayMove) $ generateLow (Piece Black King) ('e',3) position
