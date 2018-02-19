@@ -1,4 +1,4 @@
-module Test where
+--module Test where
 
 import Position
 import Move
@@ -19,4 +19,4 @@ main = do
 	putStrLn $ displayPosition new_position2
 
 	putStrLn "\n\n-----\n"
-	mapM_ print $ zip [1..] $ map (displayMove) $ generateLow (Piece Black King) ('e',3) position
+	print $ map (displayMove) $ generateLow (Piece White King) ('e',1) new_position2
