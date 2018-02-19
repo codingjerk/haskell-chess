@@ -120,7 +120,7 @@ makeMoveLow from to isCaptureMove pos@(Position board turn castl enp clock moves
 		piece = fromSquare $ board ! from
 		nextturn = if turn == White then Black else White
 		nextmoves = if turn == Black then (moves + 1) else moves
-		nexthalf = if (isRealCaptureMove && (pieceType piece == Pawn)) then 0 else (clock + 1)
+		nexthalf = if (isRealCaptureMove || (pieceType piece == Pawn)) then 0 else (clock + 1)
 		isRealCaptureMove = (board ! to) /= Nothing
 		nextcastling (Piece White King) = castl {whiteLong = False, whiteShort = False}
 		nextcastling (Piece Black King) = castl {blackLong = False, blackShort = False}
