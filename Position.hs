@@ -139,7 +139,7 @@ makeMoveNoChecks (Move CaptureMove f t) pos = (makeMoveLow f t TTrue pos)
 makeMoveNoChecks (Move (PromotionMove p) f t) pos = nextpos {board = nextboard} where
 	nextpos = (makeMoveLow f t TMaybe pos)
 	nextboard = setSquare t (Just nextpiece) (board nextpos) where
-		nextpiece = setType p (fromSquare $ board pos ! t)
+		nextpiece = setType p (fromSquare $ board pos ! f)
 
 makeMoveNoChecks (Move PawnCapture f t) pos = (makeMoveLow f t TTrue pos)
 makeMoveNoChecks (Move PawnDoubleMove f t) pos = (makeMoveLow f t TFalse pos) {enpassant = nextenpass} where
