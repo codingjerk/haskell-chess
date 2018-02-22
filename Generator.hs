@@ -1,5 +1,6 @@
 module Generator(
-	generateLow
+	generateLow,
+	generate
 ) where
 
 import Move
@@ -40,3 +41,35 @@ generateLow (Piece c King) (x, y) pos =
 	[Move (moveType (nx dx, ny dy) pos) (x, y) (nx dx, ny dy) | dx <- [-1..1], dy <- [-1..1], (dx /= 0 || dy /= 0), validmove (nx dx, ny dy) c pos ] where
 		nx d = addx x d
 		ny d = y + d
+
+generateLow (Piece White Pawn) (x, y) pos = double ++ one ++ captureLeft ++ captureRight where 
+	double = if ( validmove (x, y + 2) White pos && y == 2 && (board pos ! (x, y + 1) == Nothing) && (board pos ! (x, y + 2) == Nothing) ) 
+		then [Move PawnDoubleMove (x, y) (x, y + 2)]
+		else []
+	one = if ( validmove (x, y + 1) White pos && (board pos ! (x, y + 1) == Nothing) )
+		then [Move NormalMove (x, y) (x, y + 1)]
+		else []
+	captureLeft = if ( validmove (addx x (-1), y + 1) White pos && (board pos ! (addx x (-1), y + 1) /= Nothing) )
+		then [Move PawnCapture (x, y) (addx x (-1), y + 1)]
+		else []
+	captureRight = if ( validmove (addx x 1, y + 1) White pos && (board pos ! (addx x 1, y + 1) /= Nothing) )
+		then [Move PawnCapture (x, y) (addx x 1, y + 1)]
+		else []
+
+generateLow (Piece Black Pawn) (x, y) pos = double ++ one ++ captureLeft ++ captureRight where 
+	double = if ( validmove (x, y - 2) Black pos && y == 7 && (board pos ! (x, y - 1) == Nothing) && (board pos ! (x, y - 2) == Nothing) ) 
+		then [Move PawnDoubleMove (x, y) (x, y - 2)]
+		else []
+	one = if ( validmove (x, y - 1) Black pos && (board pos ! (x, y - 1) == Nothing) )
+		then [Move NormalMove (x, y) (x, y - 1)]
+		else []
+	captureLeft = if ( validmove (addx x (-1), y - 1) Black pos && (board pos ! (addx x (-1), y - 1) /= Nothing) )
+		then [Move PawnCapture (x, y) (addx x (-1), y - 1)]
+		else []
+	captureRight = if ( validmove (addx x 1, y - 1) Black pos && (board pos ! (addx x 1, y - 1) /= Nothing) )
+		then [Move PawnCapture (x, y) (addx x 1, y - 1)]
+		else []
+
+generate :: Coord -> Position -> [Move]
+generate coord pos = generateLow piece coord pos where
+	piece = fromJust $ board pos ! coord
