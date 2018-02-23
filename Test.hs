@@ -16,7 +16,7 @@ new_position2 = makeMove (Move EnpassantMove ('d',7) ('e',3)) new_position
 main = do 
 	putStrLn $ displayPosition position ++ "\n\n"
 	putStrLn $ displayPosition new_position ++ "\n\n"
-	putStrLn $ displayPosition new_position2
+	--putStrLn $ displayPosition new_position2
 
 	putStrLn "\n\n-----\n"
-	print $ map (displayMove) $ generateLow (Piece White King) ('e',1) new_position2
+	print $ map (displayMove) $ generate ('d',7) new_position

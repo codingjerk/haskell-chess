@@ -71,5 +71,7 @@ generateLow (Piece Black Pawn) (x, y) pos = double ++ one ++ captureLeft ++ capt
 		else []
 
 generate :: Coord -> Position -> [Move]
-generate coord pos = generateLow piece coord pos where
-	piece = fromJust $ board pos ! coord
+generate coord pos
+	| pieceColor piece == turn pos = generateLow piece coord pos 
+	| otherwise 				   = [] where
+		piece = fromJust $ board pos ! coord
