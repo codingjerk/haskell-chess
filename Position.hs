@@ -36,9 +36,9 @@ data Castling = Castling {
 
 displayCastring :: Castling -> String
 displayCastring c = wl ++ ws ++ bl ++ bs where
-	wl = if whiteLong c then  "White can long castling. "  else ""
+	wl = if whiteLong  c then "White can long castling. "  else ""
 	ws = if whiteShort c then "White can short castling. " else ""
-	bl = if blackLong c then  "Black can long castling. "  else ""
+	bl = if blackLong  c then "Black can long castling. "  else ""
 	bs = if blackShort c then "Black can short castling. " else ""
 
 castlingToFen :: Castling -> String
