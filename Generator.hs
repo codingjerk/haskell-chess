@@ -1,6 +1,7 @@
 module Generator(
 	generateLow,
-	generate
+	generate,
+	moves
 ) where
 
 import Move
@@ -70,8 +71,17 @@ generateLow (Piece Black Pawn) (x, y) pos = double ++ one ++ captureLeft ++ capt
 		then [Move PawnCapture (x, y) (addx x 1, y - 1)]
 		else []
 
+-- Temporary dummy function
+generateLow piece color pos = []
+
 generate :: Coord -> Position -> [Move]
 generate coord pos
-	| pieceColor piece == turn pos = generateLow piece coord pos 
-	| otherwise 				   = [] where
-		piece = fromJust $ board pos ! coord
+	| square == Nothing            = []
+	| pieceColor piece /= turn pos = []
+	| otherwise 				   = generateLow piece coord pos where
+		square = board pos ! coord
+		piece = fromJust square
+
+moves :: Position -> [Move]
+moves pos = concat $ map (\coord -> generate coord pos) ixs where
+	ixs = indices (board pos)
