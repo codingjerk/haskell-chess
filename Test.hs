@@ -19,4 +19,4 @@ main = do
 	--putStrLn $ displayPosition new_position2
 
 	putStrLn "\n\n-----\n"
-	print $ map (displayMove) $ generate ('d',7) new_position
+	print $ map (displayMove) $ moves new_position
