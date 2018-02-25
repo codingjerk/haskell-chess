@@ -86,7 +86,7 @@ positionFromFen str = makePosition $ words str where
 
 displayPosition :: Position -> String
 displayPosition (Position board turn castl enp clock moves) = 
-	displayBoard board ++ "\n\n" ++
+	displayBoard board ++ "\n" ++
 	"Turn: " ++ show turn ++ "\n" ++
 	"Castling Possibility: " ++ displayCastring castl ++ "\n" ++
 	"Enpassant Coordinates: " ++ show enp ++ "\n" ++
