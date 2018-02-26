@@ -71,16 +71,28 @@ generateLow (Piece Black Pawn) (x, y) pos = double ++ one ++ captureLeft ++ capt
 		then [Move PawnCapture (x, y) (addx x 1, y - 1)]
 		else []
 
-generateLow (Piece color Rook) coord@(x, y) pos = captures ++ up ++ down ++ left ++ right where
+generateLow (Piece color Rook) coord@(x, y) pos = rookcaptures ++ up ++ down ++ left ++ right where
 	up    = takeWhile (\(Move t _ to) -> validmove to color pos && t /= CaptureMove) [ Move (moveType (x, y+dy) pos) (x, y) (x, y + dy) | dy <- [1..8] ]
 	down  = takeWhile (\(Move t _ to) -> validmove to color pos && t /= CaptureMove) [ Move (moveType (x, y-dy) pos) (x, y) (x, y - dy) | dy <- [1..8] ]
 	left  = takeWhile (\(Move t _ to) -> validmove to color pos && t /= CaptureMove) [ Move (moveType (addx x (-dx), y) pos) (x, y) (addx x (-dx), y) | dx <- [1..8] ]
 	right = takeWhile (\(Move t _ to) -> validmove to color pos && t /= CaptureMove) [ Move (moveType (addx x dx, y) pos) (x, y) (addx x dx, y) | dx <- [1..8] ]
-	captures = upcap ++ downcap ++ leftcap ++ rightcap where
+	rookcaptures = upcap ++ downcap ++ leftcap ++ rightcap where
 		upcap    = first (\(Move t _ _) -> t == CaptureMove ) $ takeWhile (\(Move t _ to) -> validmove to color pos) [ Move (moveType (x, y+dy) pos) (x, y) (x, y + dy) | dy <- [1..8] ]
 		downcap  = first (\(Move t _ _) -> t == CaptureMove ) $ takeWhile (\(Move t _ to) -> validmove to color pos) [ Move (moveType (x, y-dy) pos) (x, y) (x, y - dy) | dy <- [1..8] ]
 		leftcap  = first (\(Move t _ _) -> t == CaptureMove ) $ takeWhile (\(Move t _ to) -> validmove to color pos) [ Move (moveType (addx x (-dx), y) pos) (x, y) (addx x (-dx), y) | dx <- [1..8] ]
 		rightcap = first (\(Move t _ _) -> t == CaptureMove ) $ takeWhile (\(Move t _ to) -> validmove to color pos) [ Move (moveType (addx x dx, y) pos) (x, y) (addx x dx, y) | dx <- [1..8] ]
+	first f xs = take 1 $ filter f xs
+
+generateLow (Piece color Bishop) coord@(x, y) pos = bishopcaptures ++ upleft ++ upright ++ downleft ++ downright where
+	upleft    = takeWhile (\(Move t _ to) -> validmove to color pos && t /= CaptureMove) [ Move (moveType (addx x (-d), y+d) pos) (x, y) (addx x (-d), y + d) | d <- [1..8] ]
+	upright   = takeWhile (\(Move t _ to) -> validmove to color pos && t /= CaptureMove) [ Move (moveType (addx x d, y+d) pos) (x, y) (addx x d, y + d) | d <- [1..8] ]
+	downleft  = takeWhile (\(Move t _ to) -> validmove to color pos && t /= CaptureMove) [ Move (moveType (addx x (-d), y-d) pos) (x, y) (addx x (-d), y - d) | d <- [1..8] ]
+	downright = takeWhile (\(Move t _ to) -> validmove to color pos && t /= CaptureMove) [ Move (moveType (addx x d, y-d) pos) (x, y) (addx x d, y - d) | d <- [1..8] ]
+	bishopcaptures = upleftcap ++ uprightcap ++ downleftcap ++ downrightcap where
+		upleftcap    = first (\(Move t _ _) -> t == CaptureMove) $ takeWhile (\(Move t _ to) -> validmove to color pos) [ Move (moveType (addx x (-d), y+d) pos) (x, y) (addx x (-d), y + d) | d <- [1..8] ]
+		uprightcap   = first (\(Move t _ _) -> t == CaptureMove) $ takeWhile (\(Move t _ to) -> validmove to color pos) [ Move (moveType (addx x d, y+d) pos) (x, y) (addx x d, y + d) | d <- [1..8] ]
+		downleftcap  = first (\(Move t _ _) -> t == CaptureMove) $ takeWhile (\(Move t _ to) -> validmove to color pos) [ Move (moveType (addx x (-d), y-d) pos) (x, y) (addx x (-d), y - d) | d <- [1..8] ]
+		downrightcap = first (\(Move t _ _) -> t == CaptureMove) $ takeWhile (\(Move t _ to) -> validmove to color pos) [ Move (moveType (addx x d, y-d) pos) (x, y) (addx x d, y - d) | d <- [1..8] ]
 	first f xs = take 1 $ filter f xs
 
 -- Temporary dummy function
