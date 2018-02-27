@@ -11,4 +11,4 @@ position = positionFromFen fen
 main = do 
 	putStrLn $ displayPosition position ++ "\n"
 
-	print $ map (displayMove) $ moves position
+	print $ map displayMove $ moves position
