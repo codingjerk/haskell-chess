@@ -1,6 +1,5 @@
 module Board(
 	Square(..),
-	fromSquare,
 	Board,
 	emptyBoard,
 	displayBoard,
@@ -23,9 +22,6 @@ import Data.List
 import Data.Char
 
 type Square = Maybe Piece
-
-fromSquare :: Square -> Piece
-fromSquare (Just p) = p
 
 squareWidth :: Int
 squareWidth = 2

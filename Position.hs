@@ -117,7 +117,7 @@ makeMoveLow from to isCaptureMove pos@(Position board turn castl enp clock moves
 	} where
 		nextboard = removePiece from $ addPiece to piece boardWithEmptyToSquare where
 			boardWithEmptyToSquare = if (isCaptureMove == TTrue) || (isCaptureMove == TMaybe && isRealCaptureMove) then removePiece to board else board
-		piece = fromSquare $ board ! from
+		piece = fromJust $ board ! from
 		nextturn = if turn == White then Black else White
 		nextmoves = if turn == Black then (moves + 1) else moves
 		nexthalf = if (isRealCaptureMove || (pieceType piece == Pawn)) then 0 else (clock + 1)
@@ -139,7 +139,7 @@ makeMoveNoChecks (Move CaptureMove f t) pos = (makeMoveLow f t TTrue pos)
 makeMoveNoChecks (Move (PromotionMove p) f t) pos = nextpos {board = nextboard} where
 	nextpos = (makeMoveLow f t TMaybe pos)
 	nextboard = setSquare t (Just nextpiece) (board nextpos) where
-		nextpiece = setType p (fromSquare $ board pos ! f)
+		nextpiece = setType p (fromJust $ board pos ! f)
 
 makeMoveNoChecks (Move PawnCapture f t) pos = (makeMoveLow f t TTrue pos)
 makeMoveNoChecks (Move PawnDoubleMove f t) pos = (makeMoveLow f t TFalse pos) {enpassant = nextenpass} where
