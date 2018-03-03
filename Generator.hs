@@ -11,8 +11,6 @@ import Coord
 import Data.Array
 import Data.Maybe
 
---generate :: Coord -> Position -> [Move]
-
 validx :: Char -> Bool
 validx x = 'a' <= x && x <= 'h'
 
