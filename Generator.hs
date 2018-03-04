@@ -41,32 +41,40 @@ generateLow (Piece c King) (x, y) pos =
 		nx d = addx x d
 		ny d = y + d
 
-generateLow (Piece White Pawn) (x, y) pos = double ++ one ++ captureLeft ++ captureRight where 
+generateLow (Piece White Pawn) (x, y) pos = proms ++ double ++ one ++ captureLeft ++ captureRight where 
 	double = if ( validmove (x, y + 2) White pos && y == 2 && (board pos ! (x, y + 1) == Nothing) && (board pos ! (x, y + 2) == Nothing) ) 
 		then [Move PawnDoubleMove (x, y) (x, y + 2)]
 		else []
-	one = if ( validmove (x, y + 1) White pos && (board pos ! (x, y + 1) == Nothing) )
+	one = if ( y /= 7 && validmove (x, y + 1) White pos && (board pos ! (x, y + 1) == Nothing) )
 		then [Move NormalMove (x, y) (x, y + 1)]
 		else []
-	captureLeft = if ( validmove (addx x (-1), y + 1) White pos && (board pos ! (addx x (-1), y + 1) /= Nothing) )
+	captureLeft = if ( y /= 7 && validmove (addx x (-1), y + 1) White pos && (board pos ! (addx x (-1), y + 1) /= Nothing) )
 		then [Move PawnCapture (x, y) (addx x (-1), y + 1)]
 		else []
-	captureRight = if ( validmove (addx x 1, y + 1) White pos && (board pos ! (addx x 1, y + 1) /= Nothing) )
+	captureRight = if ( y /= 7 && validmove (addx x 1, y + 1) White pos && (board pos ! (addx x 1, y + 1) /= Nothing) )
 		then [Move PawnCapture (x, y) (addx x 1, y + 1)]
 		else []
+	proms = if ( y == 7 )
+		then filter (\(Move _ _ to) -> validmove to White pos) $ [Move (PromotionMove p) (x, y) (addx x dx, 8) | dx <- [-1, 1], moveType (addx x dx, 8) pos == CaptureMove, p <- [Knight, Bishop, Rook, Queen]]
+			++ [Move (PromotionMove p) (x, y) (x, 8) | p <- [Knight, Bishop, Rook, Queen]]
+		else []
 
-generateLow (Piece Black Pawn) (x, y) pos = double ++ one ++ captureLeft ++ captureRight where 
+generateLow (Piece Black Pawn) (x, y) pos = proms ++ double ++ one ++ captureLeft ++ captureRight where 
 	double = if ( validmove (x, y - 2) Black pos && y == 7 && (board pos ! (x, y - 1) == Nothing) && (board pos ! (x, y - 2) == Nothing) ) 
 		then [Move PawnDoubleMove (x, y) (x, y - 2)]
 		else []
-	one = if ( validmove (x, y - 1) Black pos && (board pos ! (x, y - 1) == Nothing) )
+	one = if ( y /= 2 && validmove (x, y - 1) Black pos && (board pos ! (x, y - 1) == Nothing) )
 		then [Move NormalMove (x, y) (x, y - 1)]
 		else []
-	captureLeft = if ( validmove (addx x (-1), y - 1) Black pos && (board pos ! (addx x (-1), y - 1) /= Nothing) )
+	captureLeft = if ( y /= 2 && validmove (addx x (-1), y - 1) Black pos && (board pos ! (addx x (-1), y - 1) /= Nothing) )
 		then [Move PawnCapture (x, y) (addx x (-1), y - 1)]
 		else []
-	captureRight = if ( validmove (addx x 1, y - 1) Black pos && (board pos ! (addx x 1, y - 1) /= Nothing) )
+	captureRight = if ( y /= 2 && validmove (addx x 1, y - 1) Black pos && (board pos ! (addx x 1, y - 1) /= Nothing) )
 		then [Move PawnCapture (x, y) (addx x 1, y - 1)]
+		else []
+	proms = if ( y == 2 )
+		then filter (\(Move _ _ to) -> validmove to Black pos) $ [Move (PromotionMove p) (x, y) (addx x dx, 1) | dx <- [-1, 1], moveType (addx x dx, 1) pos == CaptureMove, p <- [Knight, Bishop, Rook, Queen]]
+			++ [Move (PromotionMove p) (x, y) (x, 1) | p <- [Knight, Bishop, Rook, Queen]]
 		else []
 
 generateLow (Piece color Rook) coord@(x, y) pos = rookcaptures ++ up ++ down ++ left ++ right where
