@@ -55,8 +55,8 @@ generateLow (Piece White Pawn) (x, y) pos = proms ++ double ++ one ++ captureLef
 		then [Move PawnCapture (x, y) (addx x 1, y + 1)]
 		else []
 	proms = if ( y == 7 )
-		then filter (\(Move _ _ to) -> validmove to White pos) $ [Move (PromotionMove p) (x, y) (addx x dx, 8) | dx <- [-1, 1], moveType (addx x dx, 8) pos == CaptureMove, p <- [Knight, Bishop, Rook, Queen]]
-			++ [Move (PromotionMove p) (x, y) (x, 8) | p <- [Knight, Bishop, Rook, Queen]]
+		then filter (\(Move _ _ to) -> validmove to White pos) $ [Move (PromotionMove p) (x, y) (addx x dx, 8) | dx <- [-1, 1], moveType (addx x dx, 8) pos == CaptureMove, p <- [Queen, Rook, Bishop, Knight]]
+			++ [Move (PromotionMove p) (x, y) (x, 8) | p <- [Queen, Rook, Bishop, Knight]]
 		else []
 
 generateLow (Piece Black Pawn) (x, y) pos = proms ++ double ++ one ++ captureLeft ++ captureRight where 
@@ -73,8 +73,8 @@ generateLow (Piece Black Pawn) (x, y) pos = proms ++ double ++ one ++ captureLef
 		then [Move PawnCapture (x, y) (addx x 1, y - 1)]
 		else []
 	proms = if ( y == 2 )
-		then filter (\(Move _ _ to) -> validmove to Black pos) $ [Move (PromotionMove p) (x, y) (addx x dx, 1) | dx <- [-1, 1], moveType (addx x dx, 1) pos == CaptureMove, p <- [Knight, Bishop, Rook, Queen]]
-			++ [Move (PromotionMove p) (x, y) (x, 1) | p <- [Knight, Bishop, Rook, Queen]]
+		then filter (\(Move _ _ to) -> validmove to Black pos) $ [Move (PromotionMove p) (x, y) (addx x dx, 1) | dx <- [-1, 1], moveType (addx x dx, 1) pos == CaptureMove, p <- [Queen, Rook, Bishop, Knight]]
+			++ [Move (PromotionMove p) (x, y) (x, 1) | p <- [Queen, Rook, Bishop, Knight]]
 		else []
 
 generateLow (Piece color Rook) coord@(x, y) pos = rookcaptures ++ up ++ down ++ left ++ right where
