@@ -41,7 +41,7 @@ generateLow (Piece c King) (x, y) pos =
 		nx d = addx x d
 		ny d = y + d
 
-generateLow (Piece White Pawn) (x, y) pos = proms ++ double ++ one ++ captureLeft ++ captureRight where 
+generateLow (Piece White Pawn) (x, y) pos = proms ++ captureLeft ++ captureRight ++ double ++ one where 
 	double = if ( validmove (x, y + 2) White pos && y == 2 && (board pos ! (x, y + 1) == Nothing) && (board pos ! (x, y + 2) == Nothing) ) 
 		then [Move PawnDoubleMove (x, y) (x, y + 2)]
 		else []
@@ -59,7 +59,7 @@ generateLow (Piece White Pawn) (x, y) pos = proms ++ double ++ one ++ captureLef
 			++ [Move (PromotionMove p) (x, y) (x, 8) | p <- [Queen, Rook, Bishop, Knight]]
 		else []
 
-generateLow (Piece Black Pawn) (x, y) pos = proms ++ double ++ one ++ captureLeft ++ captureRight where 
+generateLow (Piece Black Pawn) (x, y) pos = proms ++ captureLeft ++ captureRight ++ double ++ one where 
 	double = if ( validmove (x, y - 2) Black pos && y == 7 && (board pos ! (x, y - 1) == Nothing) && (board pos ! (x, y - 2) == Nothing) ) 
 		then [Move PawnDoubleMove (x, y) (x, y - 2)]
 		else []
