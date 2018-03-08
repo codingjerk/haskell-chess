@@ -41,7 +41,7 @@ generateLow (Piece c King) (x, y) pos =
 		nx d = addx x d
 		ny d = y + d
 
-generateLow (Piece White Pawn) (x, y) pos = proms ++ captureLeft ++ captureRight ++ double ++ one where 
+generateLow (Piece White Pawn) (x, y) pos = proms ++ captureLeft ++ captureRight ++ enpas ++ double ++ one where 
 	double = if ( validmove (x, y + 2) White pos && y == 2 && (board pos ! (x, y + 1) == Nothing) && (board pos ! (x, y + 2) == Nothing) ) 
 		then [Move PawnDoubleMove (x, y) (x, y + 2)]
 		else []
@@ -58,8 +58,10 @@ generateLow (Piece White Pawn) (x, y) pos = proms ++ captureLeft ++ captureRight
 		then filter (\(Move _ _ to) -> validmove to White pos) $ [Move (PromotionMove p) (x, y) (addx x dx, 8) | dx <- [-1, 1], moveType (addx x dx, 8) pos == CaptureMove, p <- [Queen, Rook, Bishop, Knight]]
 			++ [Move (PromotionMove p) (x, y) (x, 8) | p <- [Queen, Rook, Bishop, Knight]]
 		else []
+	enpas = filter (\(Move _ from to) -> (vc from to) && (enpassant pos /= Nothing) && validmove to White pos) $ [Move EnpassantMove (x, y) (fromJust $ enpassant pos)] where
+		vc (fx, fy) (tx, ty) = (ty == fy + 1) && (abs (fromEnum tx - fromEnum fx) == 1)
 
-generateLow (Piece Black Pawn) (x, y) pos = proms ++ captureLeft ++ captureRight ++ double ++ one where 
+generateLow (Piece Black Pawn) (x, y) pos = proms ++ captureLeft ++ captureRight ++ enpas ++ double ++ one where 
 	double = if ( validmove (x, y - 2) Black pos && y == 7 && (board pos ! (x, y - 1) == Nothing) && (board pos ! (x, y - 2) == Nothing) ) 
 		then [Move PawnDoubleMove (x, y) (x, y - 2)]
 		else []
@@ -76,6 +78,8 @@ generateLow (Piece Black Pawn) (x, y) pos = proms ++ captureLeft ++ captureRight
 		then filter (\(Move _ _ to) -> validmove to Black pos) $ [Move (PromotionMove p) (x, y) (addx x dx, 1) | dx <- [-1, 1], moveType (addx x dx, 1) pos == CaptureMove, p <- [Queen, Rook, Bishop, Knight]]
 			++ [Move (PromotionMove p) (x, y) (x, 1) | p <- [Queen, Rook, Bishop, Knight]]
 		else []
+	enpas = filter (\(Move _ from to) -> (vc from to) && (enpassant pos /= Nothing) && validmove to Black pos) $ [Move EnpassantMove (x, y) (fromJust $ enpassant pos)] where
+		vc (fx, fy) (tx, ty) = (ty == fy - 1) && (abs (fromEnum tx - fromEnum fx) == 1)
 
 generateLow (Piece color Rook) coord@(x, y) pos = rookcaptures ++ up ++ down ++ left ++ right where
 	up    = takeWhile (\(Move t _ to) -> validmove to color pos && t /= CaptureMove) [ Move (moveType (x, y+dy) pos) (x, y) (x, y + dy) | dy <- [1..8] ]
