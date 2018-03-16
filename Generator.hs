@@ -36,8 +36,21 @@ generateLow (Piece c Knight) (x, y) pos =
 		nx d = addx x d
 		ny d = y + d
 
-generateLow (Piece c King) (x, y) pos = 
-	[Move (moveType (nx dx, ny dy) pos) (x, y) (nx dx, ny dy) | dx <- [-1..1], dy <- [-1..1], (dx /= 0 || dy /= 0), validmove (nx dx, ny dy) c pos ] where
+generateLow (Piece c King) (x, y) pos@(Position _ _ (Castling wl ws bl bs) _ _ _) = castls c ++ moves where
+	castls c = longCastl c ++ shortCastl c where
+		longCastl White = if wl
+			then [Move LongCastlingMove (x, y) ('c', y)]
+			else []
+		longCastl Black = if bl
+			then [Move LongCastlingMove (x, y) ('c', y)]
+			else []
+		shortCastl White = if ws
+			then [Move ShortCastlingMove (x, y) ('g', y)]
+			else []
+		shortCastl Black = if bs
+			then [Move ShortCastlingMove (x, y) ('g', y)]
+			else []
+	moves = [Move (moveType (nx dx, ny dy) pos) (x, y) (nx dx, ny dy) | dx <- [-1..1], dy <- [-1..1], (dx /= 0 || dy /= 0), validmove (nx dx, ny dy) c pos ] where
 		nx d = addx x d
 		ny d = y + d
 
@@ -55,8 +68,8 @@ generateLow (Piece White Pawn) (x, y) pos = proms ++ captureLeft ++ captureRight
 		then [Move PawnCapture (x, y) (addx x 1, y + 1)]
 		else []
 	proms = if ( y == 7 )
-		then filter (\(Move _ _ to) -> validmove to White pos) $ [Move (PromotionMove p) (x, y) (addx x dx, 8) | dx <- [-1, 1], moveType (addx x dx, 8) pos == CaptureMove, p <- [Queen, Rook, Bishop, Knight]]
-			++ [Move (PromotionMove p) (x, y) (x, 8) | p <- [Queen, Rook, Bishop, Knight]]
+		then filter (\(Move _ _ to) -> validmove to White pos && moveType to pos == CaptureMove) $ [Move (PromotionMove p) (x, y) (addx x dx, 8) | dx <- [-1, 1], p <- [Queen, Rook, Bishop, Knight]]
+			++ [Move (PromotionMove p) (x, y) (x, 8) | p <- [Queen, Rook, Bishop, Knight], moveType (x, 8) pos /= CaptureMove]
 		else []
 	enpas = filter (\(Move _ from to) -> (vc from to) && validmove to White pos) $ [Move EnpassantMove (nx, y) (fromJust $ enpassant pos) | nx <- [x], (enpassant pos /= Nothing)] where
 		vc (fx, fy) (tx, ty) = (ty == fy + 1) && (abs (fromEnum tx - fromEnum fx) == 1)
@@ -75,8 +88,8 @@ generateLow (Piece Black Pawn) (x, y) pos = proms ++ captureLeft ++ captureRight
 		then [Move PawnCapture (x, y) (addx x 1, y - 1)]
 		else []
 	proms = if ( y == 2 )
-		then filter (\(Move _ _ to) -> validmove to Black pos) $ [Move (PromotionMove p) (x, y) (addx x dx, 1) | dx <- [-1, 1], moveType (addx x dx, 1) pos == CaptureMove, p <- [Queen, Rook, Bishop, Knight]]
-			++ [Move (PromotionMove p) (x, y) (x, 1) | p <- [Queen, Rook, Bishop, Knight]]
+		then filter (\(Move _ _ to) -> validmove to Black pos && moveType to pos == CaptureMove) $ [Move (PromotionMove p) (x, y) (addx x dx, 1) | dx <- [-1, 1], p <- [Queen, Rook, Bishop, Knight]]
+			++ [Move (PromotionMove p) (x, y) (x, 1) | p <- [Queen, Rook, Bishop, Knight], moveType (x, 1) pos /= CaptureMove]
 		else []
 	enpas = filter (\(Move _ from to) -> (vc from to) && validmove to Black pos) $ [Move EnpassantMove (nx, y) (fromJust $ enpassant pos) | nx <- [x], (enpassant pos /= Nothing)] where
 		vc (fx, fy) (tx, ty) = (ty == fy - 1) && (abs (fromEnum tx - fromEnum fx) == 1)
