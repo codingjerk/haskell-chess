@@ -39,16 +39,16 @@ generateLow (Piece c Knight) (x, y) pos =
 
 generateLow (Piece c King) (x, y) pos@(Position _ _ (Castling wl ws bl bs) _ _ _) = castls c ++ moves where
 	castls c = longCastl c ++ shortCastl c where
-		longCastl White = if wl
+		longCastl White = if wl && all (==Nothing) (map (\coord -> board pos ! coord) $ [('b',y),('c',y),('d',y)]) 
 			then [Move LongCastlingMove (x, y) ('c', y)]
 			else []
-		longCastl Black = if bl
+		longCastl Black = if bl && all (==Nothing) (map (\coord -> board pos ! coord) $ [('b',y),('c',y),('d',y)]) 
 			then [Move LongCastlingMove (x, y) ('c', y)]
 			else []
-		shortCastl White = if ws
+		shortCastl White = if ws && all (==Nothing) (map (\coord -> board pos ! coord) $ [('f',y),('g',y)]) 
 			then [Move ShortCastlingMove (x, y) ('g', y)]
 			else []
-		shortCastl Black = if bs
+		shortCastl Black = if bs && all (==Nothing) (map (\coord -> board pos ! coord) $ [('f',y),('g',y)]) 
 			then [Move ShortCastlingMove (x, y) ('g', y)]
 			else []
 	moves = [Move (moveType (nx dx, ny dy) pos) (x, y) (nx dx, ny dy) | dx <- [-1..1], dy <- [-1..1], (dx /= 0 || dy /= 0), validmove (nx dx, ny dy) c pos ] where
