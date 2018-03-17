@@ -1,7 +1,8 @@
 module Generator(
 	generateLow,
 	generate,
-	moves
+	moves,
+	isLegalPosition
 ) where
 
 import Move
@@ -150,3 +151,19 @@ generate coord pos
 moves :: Position -> [Move]
 moves pos = concat $ map (\coord -> generate coord pos) ixs where
 	ixs = indices (board pos)
+
+isAttacked :: Coord -> Position -> Bool
+isAttacked coord pos = not $ null $ filter (\(Move _ _ to) -> to == coord) $ moves pos
+
+findPiece :: Piece -> Position -> [Coord]
+findPiece piece (Position board _ _ _ _ _) = map (fst) $ filter (\x -> snd x == Just piece) (assocs board)
+
+invertColor :: TurnColor -> TurnColor
+invertColor Black = White
+invertColor White = Black
+
+isLegalPosition :: Position -> Bool
+isLegalPosition pos = not $ (null kings) || (isAttacked kingCoord pos) where
+	kings = findPiece (Piece color King) pos
+	kingCoord = head $ kings
+	color = invertColor (turn pos)

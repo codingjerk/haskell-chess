@@ -5,8 +5,7 @@ module Position(
 	positionFromFen,
 	displayPosition,
 	positionToFen,
-	makeMove,
-	isLegalPosition
+	makeMove
 ) where
 
 import Board
@@ -170,18 +169,3 @@ makeMove move pos
 	| isValidMove move pos = makeMoveNoChecks move pos
 	| otherwise 	       = error "Internal error: invalid move" 
 
-isAttacked :: Coord -> Position -> Bool
-isAttacked coord pos = undefined
-
-findPiece :: Piece -> Position -> [Coord]
-findPiece piece (Position board _ _ _ _ _) = map (fst) $ filter (\x -> snd x == Just piece) (assocs board)
-
-invertColor :: TurnColor -> TurnColor
-invertColor Black = White
-invertColor White = Black
-
-isLegalPosition :: Position -> Bool
-isLegalPosition pos = not $ (null kings) || (isAttacked kingCoord pos) where
-	kings = findPiece (Piece color King) pos
-	kingCoord = head $ kings
-	color = invertColor (turn pos)
