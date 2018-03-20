@@ -1,19 +1,17 @@
 --module Test where
 
+import System.Environment
 import Position
 import Perft
-import Generator
 import Move
+import Generator
 
-fen = "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1"
+fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 position = positionFromFen fen
 
-depth :: String
-depth = "3"
-
 main = do
-	--putStrLn "Введите глубину perft'а:"
-	--depth <- getLine
-	putStrLn $ "Число узлов для глубины " ++ depth ++ ":"
-	print $ perft (read depth) position 
+	args <- getArgs
+	putStrLn $ "Число узлов для глубины " ++ depth args ++ ":"
+	print $ perft (read $ depth args) position where
+		depth args = head args
