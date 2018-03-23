@@ -1,5 +1,5 @@
 module Test (
-	test
+    test
 ) where
 
 import System.Environment
@@ -14,7 +14,7 @@ position = positionFromFen fen
 
 test :: IO ()
 test = do
-	args <- getArgs
-	putStrLn $ "Число узлов для глубины " ++ depth args ++ ":"
-	print $ perft (read $ depth args) position where
-		depth args = head args
+    args <- getArgs
+    putStrLn $ "Число узлов для глубины " ++ depth args ++ ":"
+    print $ perft (read $ depth args) position where
+        depth args = head args

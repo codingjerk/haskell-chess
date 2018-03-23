@@ -1,26 +1,26 @@
 module Piece(
-	Piece(..),
-	PieceColor(..),
-	PieceType(..),
-	displayPiece,
-	pieceToFen,
-	pieceFromFen,
-	pieceTypeToFen,
-	pieceType,
-	pieceColor,
-	setType
+    Piece(..),
+    PieceColor(..),
+    PieceType(..),
+    displayPiece,
+    pieceToFen,
+    pieceFromFen,
+    pieceTypeToFen,
+    pieceType,
+    pieceColor,
+    setType
 ) where
 
 import Data.Char
 
 data PieceColor = Black | White
-	deriving (Show, Read, Eq, Ord)
+    deriving (Show, Read, Eq, Ord)
 
 data PieceType = Pawn | Knight | Bishop | Rook | Queen | King
-	deriving (Show, Read, Eq, Enum, Ord)
+    deriving (Show, Read, Eq, Enum, Ord)
 
 data Piece = Piece PieceColor PieceType
-	deriving (Show, Read, Eq, Ord)
+    deriving (Show, Read, Eq, Ord)
 
 pieceType :: Piece -> PieceType
 pieceType (Piece _ t) = t

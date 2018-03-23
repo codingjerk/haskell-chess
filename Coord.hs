@@ -1,7 +1,7 @@
 module Coord(
-	Coord(..),
-	coordFromFen,
-	coordToFen
+    Coord(..),
+    coordFromFen,
+    coordToFen
 ) where
 
 import Data.Char

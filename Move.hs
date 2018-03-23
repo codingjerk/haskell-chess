@@ -1,29 +1,30 @@
 module Move(
-	Move(..),
-	MoveType(..),
-	displayMove
+    Move(..),
+    MoveType(..),
+    displayMove
 ) where
 
 import Coord
 import Piece
 
 data MoveType = 
-	NormalMove | 
-	CaptureMove |
+    NormalMove | 
+    CaptureMove |
 
-	PromotionMove PieceType |
-	PawnCapture |
-	PawnDoubleMove |
-	EnpassantMove | 
+    PromotionMove PieceType |
+    PawnCapture |
+    PawnDoubleMove |
+    EnpassantMove | 
 
-	LongCastlingMove |
-	ShortCastlingMove 
-	deriving (Show, Eq)
+    LongCastlingMove |
+    ShortCastlingMove 
+    deriving (Show, Eq)
 
 data Move = Move {
-	kind :: MoveType,
-	from :: Coord, 
-	to 	 :: Coord
+    kind :: MoveType,
+    from :: Coord, 
+    to   :: Coord
+
 } deriving (Show, Eq)
 
 displayMove :: Move -> String
