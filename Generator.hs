@@ -1,6 +1,7 @@
+-- | Generator is more important part of engine, that contains dynamical
+-- functions for generating moves and legality checking.
+
 module Generator(
-    generateLow,
-    generate,
     moves,
     isLegalPosition
 ) where
@@ -148,6 +149,7 @@ generate coord pos
         square = board pos ! coord
         piece = fromJust square
 
+-- | 'moves' function gets a position and returns all pseudo-legal moves for play turn.
 moves :: Position -> [Move]
 moves pos = concat $ map (\coord -> generate coord pos) ixs where
     ixs = indices (board pos)
@@ -162,6 +164,8 @@ invertColor :: TurnColor -> TurnColor
 invertColor Black = White
 invertColor White = Black
 
+-- | 'isLegalPosition' function gets position and returns boolean value,
+-- that shows that position is legal (no mates, all kings are on board).
 isLegalPosition :: Position -> Bool
 isLegalPosition pos = not $ (null kings) || (isAttacked kingCoord pos) where
     kings = findPiece (Piece color King) pos
