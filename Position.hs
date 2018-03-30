@@ -1,11 +1,19 @@
+-- | Module Position contains type 'Position' (more complex version or 'Board'),
+-- and some usefull functions to work with positions.
+
 module Position(
+    -- * Types
     TurnColor,
     Castling(..),
     Position(..),
-    positionFromFen,
+
+    -- * Making moves
+    makeMove,
+
+    -- * Display
     displayPosition,
-    positionToFen,
-    makeMove
+    positionFromFen,
+    positionToFen
 ) where
 
 import Board
@@ -16,6 +24,7 @@ import Coord
 import Move
 import Data.Char
 
+-- | TurnColor is just synomim to PieceColor and it implement color of side, what will making move in next turn.
 type TurnColor = PieceColor
 
 colorFromFen :: String -> TurnColor
@@ -27,6 +36,7 @@ colorToFen :: TurnColor -> String
 colorToFen (White) = "w"
 colorToFen (Black) = "b"
 
+-- | Castling type implements castlint availability for all directions and all colors in position.
 data Castling = Castling {
     whiteLong :: Bool,
     whiteShort :: Bool,
@@ -56,12 +66,26 @@ castlingFromFen ('k':xs) = (castlingFromFen xs) {blackShort = True}
 castlingFromFen ('Q':xs) = (castlingFromFen xs) {whiteLong = True}
 castlingFromFen ('q':xs) = (castlingFromFen xs) {blackLong = True}
 
+-- | Position type is more complex version of 'Board'. It contains board
+-- and additional information - side to turn, castling availability, 
+-- enpassant square and some information about moves count.
 data Position = Position {
+    -- | Pieces emplacement.
     board :: Board,
+    -- | Active color.
     turn  :: TurnColor,
+    -- | Castling availability.
     castling :: Castling,
+    -- | If a pawn has just made a two-square move, 
+    -- this is the position "behind" the pawn. 
+    -- This is recorded regardless of whether there is a pawn in 
+    -- position to make an en passant capture.
     enpassant :: Maybe Coord,
+    -- | This is the number of halfmoves since the last pawn advance or capture. 
+    -- This is used to determine if a draw can be claimed under the fifty-move rule.
     halfmoveClock :: Integer,
+    -- | The number of the full move. 
+    -- It starts at 1, and is incremented after Black's move.
     fullmoveNumber :: Integer
 } deriving (Show)
 
@@ -73,6 +97,10 @@ enpassantToFen :: Maybe Coord -> String
 enpassantToFen Nothing = "-"
 enpassantToFen (Just coord) = coordToFen coord
 
+-- | positionFromFen gets a fen-string and returns a position for 
+-- this record.
+--
+-- This function may generate error if fen is not valid. 
 positionFromFen :: String -> Position
 positionFromFen str = makePosition $ words str where
     makePosition (pieces: turn: castling: enpassant: clock: movesNumber: []) = 
@@ -84,6 +112,8 @@ positionFromFen str = makePosition $ words str where
             (read clock :: Integer)
             (read movesNumber :: Integer) 
 
+-- | displayPosition gets a position and returns it's String implementation
+-- in cute view.
 displayPosition :: Position -> String
 displayPosition (Position board turn castl enp clock moves) = 
     displayBoard board ++ "\n" ++
@@ -93,6 +123,8 @@ displayPosition (Position board turn castl enp clock moves) =
     "Halfmove clock: " ++ show clock ++ "\n" ++
     "Fullmove number: " ++ show moves
 
+-- | This function gets a position and returns it's String implementation
+-- in FEN-notation.
 positionToFen :: Position -> String
 positionToFen (Position board turn castl enp clock moves) =
     boardToFen board ++ " " ++
@@ -160,12 +192,7 @@ makeMoveNoChecks (Move ShortCastlingMove f t) pos = makeMoveNoChecks (Move Norma
     rookFrom = ('h', snd f)
     rookTo = ('f', snd f)
 
--- TODO: Create move validation function for testing
-isValidMove :: Move -> Position -> Bool
-isValidMove move pos = True
-
+-- | This function gets move and position and returns new position,
+-- which is obtained after making move.
 makeMove :: Move -> Position -> Position
-makeMove move pos 
-    | isValidMove move pos = makeMoveNoChecks move pos
-    | otherwise            = error "Internal error: invalid move" 
-
+makeMove move pos = makeMoveNoChecks move pos
