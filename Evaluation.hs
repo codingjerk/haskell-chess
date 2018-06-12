@@ -6,6 +6,7 @@ module Evaluation(
     Score(..),
 
     -- * Main part
+    infinity,
     evaluate
 ) where
 
@@ -16,6 +17,8 @@ import Piece
 -- | Type 'Score' implemets objective value of 'Piece' or 'Position'
 -- as example.
 type Score = Int
+
+infinity = eval King
 
 class Eval a where
     eval :: a -> Score
