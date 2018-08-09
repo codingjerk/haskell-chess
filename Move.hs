@@ -32,7 +32,9 @@ data MoveType =
     -- | Long Castling (to 'Queen' side) is special 'King' move, that also affects 'Rook' on a-file 
     LongCastlingMove |
     -- | Short Castling (to 'King' side) is special 'King' move, that also affects 'Rook' on h-file 
-    ShortCastlingMove 
+    ShortCastlingMove |
+    -- | Special move type to implement not a move
+    NullMove
     deriving (Show, Eq)
 
 -- | Move type contains from, to coordinates and a type of move.
